@@ -1,0 +1,11 @@
+  - name: install epel-release
+    yum: name=epel-release state=present
+    when: ansible_distribution in ['RedHat', 'CentOS']
+
+  - name: installing dependencies
+    yum: name={{ item }} state=present
+    with_items:
+      - gcc-c++
+      - make
+      - nodejs
+      - npm

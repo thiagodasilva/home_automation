@@ -1,0 +1,17 @@
+  - name: add mosquitto repository
+    yum_repository:
+        name: home_oojah_mqtt
+        description: mqtt (CentOS_CentOS-7)
+        baseurl: http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-7/
+        gpgcheck: yes
+        gpgkey: http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-7//repodata/repomd.xml.key
+        enabled: yes
+
+  - name: installing dependencies
+    yum: name={{ item }} state=present
+    with_items:
+      - mosquitto
+      - mosquitto-clients
+
+  - name: start mosquitto service
+    service: name=mosquitto state=started enabled=yes
