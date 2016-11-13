@@ -9,3 +9,9 @@
       - make
       - nodejs
       - npm
+      - python-pip
+
+  - name: installing pip-dependencies
+    pip: name={{ item }} state=present extra_args='--upgrade'
+    with_items:
+      - influxdb
