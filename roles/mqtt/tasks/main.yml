@@ -13,5 +13,8 @@
       - mosquitto
       - mosquitto-clients
 
+  - name: reload systemd
+    command: /usr/bin/systemctl --system daemon-reload
+
   - name: start mosquitto service
-    service: name=mosquitto state=started enabled=yes
+    systemd: name=mosquitto state=started enabled=yes

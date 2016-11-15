@@ -1,0 +1,6 @@
+
+  - debug: msg="node-red port 1880"
+
+  - debug: msg="influxdb port 8083"
+
+  - debug: msg="grafana port 3000"

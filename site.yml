@@ -6,3 +6,4 @@
     - influxdb
     - grafana
     - node_red
+    - post_config

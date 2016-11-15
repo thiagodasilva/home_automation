@@ -16,4 +16,4 @@
     service: name=influxdb state=started enabled=yes
 
   - name: Create sample database
-    command: /opt/influxdb/influx -execute 'CREATE DATABASE sensors_db'
+    command: influx -execute 'CREATE DATABASE sensors_db'
