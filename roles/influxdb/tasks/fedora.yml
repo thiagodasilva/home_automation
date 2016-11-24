@@ -1,0 +1,8 @@
+  - name: install centos rpm file
+    dnf: name=https://repos.influxdata.com/centos/7/x86_64/stable/influxdb-1.1.0.x86_64.rpm state=present
+
+  - name: start influxdb service
+    service: name=influxdb state=started enabled=yes
+
+  - name: Create sample database
+    command: influx -execute 'CREATE DATABASE sensors_db'

@@ -1,18 +1,5 @@
-  - name: add grafana repository
-    yum_repository:
-        name: grafana
-        description: grafana
-        baseurl: https://packagecloud.io/grafana/stable/el/7/$basearch
-        gpgcheck: yes
-        gpgkey: https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
-        enabled: yes
-        sslverify: yes
-        sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+- include: centos.yml
+  when: ansible_distribution in ['RedHat', 'CentOS']
 
-  - name: installing dependencies
-    yum: name={{ item }} state=present
-    with_items:
-      - grafana
-
-  - name: start influxdb service
-    service: name=grafana-server state=started enabled=yes
+- include: fedora.yml
+  when: ansible_distribution in ['Fedora']

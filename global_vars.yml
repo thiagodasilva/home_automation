@@ -1,0 +1,3 @@
+username: "vagrant"
+group: "vagrant"
+gopath: /home/{{ username }}/go_work

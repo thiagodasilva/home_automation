@@ -1,5 +1,15 @@
 - hosts: all
-  sudo: True
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: install python and deps for ansible modules
+      raw: dnf install -y python2 python2-dnf libselinux-python
+
+- hosts: all
+  gather_facts: true
+  become: yes
+  vars_files:
+    - "global_vars.yml"
   roles:
     - pre_config
     - mqtt

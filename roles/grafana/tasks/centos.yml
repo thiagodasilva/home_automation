@@ -1,0 +1,18 @@
+  - name: add grafana repository
+    yum_repository:
+        name: grafana
+        description: grafana
+        baseurl: https://packagecloud.io/grafana/stable/el/7/$basearch
+        gpgcheck: yes
+        gpgkey: https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+        enabled: yes
+        sslverify: yes
+        sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+
+  - name: installing dependencies
+    yum: name={{ item }} state=present
+    with_items:
+      - grafana
+
+  - name: start grafana service
+    service: name=grafana-server state=started enabled=yes
