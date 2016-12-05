@@ -1,8 +1,60 @@
-  - name: install centos rpm file
-    dnf: name=https://repos.influxdata.com/centos/7/x86_64/stable/influxdb-1.1.0.x86_64.rpm state=present
+  - name: assure go work directory exists
+    file: path="{{ local_home }}/work" state=directory
 
-  - name: start influxdb service
-    service: name=influxdb state=started enabled=yes
+  - name: add new env. variable for GOPATH
+    lineinfile: dest="{{ local_home }}/.bashrc" line="export GOPATH={{ local_home }}/work"
 
-  - name: Create sample database
-    command: influx -execute 'CREATE DATABASE sensors_db'
+  - name: go get gmd
+    command: "go get github.com/sparrc/gdm"
+
+  - name: build gmd
+    command: go build ./...
+    args:
+        chdir: "{{ local_home }}/work/src/github.com/sparrc/gdm"
+
+  - name: go get influxdb
+    command: go get github.com/influxdata/influxdb
+
+  - name: checkout latest stable release
+    command: git checkout v1.1.0 -b stable_rel
+    args:
+        chdir: "{{ local_home}}/work/src/github.com/influxdata/influxdb"
+
+  - name: run gdm restore
+    command: "{{ local_home}}/work/bin/gdm restore"
+    args:
+        chdir: "{{ local_home}}/work/src/github.com/influxdata/influxdb"
+
+  - name: run go clean
+    command: go clean ./...
+    args:
+        chdir: "{{ local_home}}/work/src/github.com/influxdata/influxdb"
+
+  - name: run go install
+    command: go install ./...
+    args:
+        chdir: "{{ local_home }}/work/src/github.com/influxdata/influxdb"
+
+  - name: create influxdb user
+    user: name=influxdb createhome=no shell=/sbin/nologin state=present
+
+  - name: copy influxd to /usr/bin
+    command: cp {{ local_home }}/work/bin/influxd /usr/bin/
+
+  - name: copy influx to /usr/bin
+    command: cp {{ local_home }}/work/bin/influx /usr/bin/
+
+  - name: create /etc/influxdb
+    file: path=/etc/influxdb state=directory
+
+  - name: create var/run/influxdb
+    file: path=/var/run/influxdb owner=influxdb group=influxdb recurse=yes state=directory
+
+  - name: create config file
+    template: src=influxdb.conf.j2 dest=/etc/influxdb/influxdb.conf
+
+  - name: install .service file
+    command: cp {{ local_home }}/work/src/github.com/influxdata/influxdb/scripts/influxdb.service /usr/lib/systemd/system/
+
+  - name: reload systemd
+    command: /usr/bin/systemctl --system daemon-reload

@@ -11,9 +11,3 @@
     yum: name={{ item }} state=present
     with_items:
       - influxdb
-
-  - name: start influxdb service
-    service: name=influxdb state=started enabled=yes
-
-  - name: Create sample database
-    command: influx -execute 'CREATE DATABASE sensors_db'

@@ -11,6 +11,8 @@
       - npm
       - python-pip
       - wget
+      - go
+      - git
 
   - name: installing pip-dependencies
     pip: name={{ item }} state=present extra_args='--upgrade'

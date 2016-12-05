@@ -8,6 +8,8 @@
 - hosts: all
   gather_facts: true
   become: yes
+  environment:
+    GOPATH: "{{ local_home }}/work"
   vars_files:
     - "global_vars.yml"
   roles:
