@@ -1,5 +1,6 @@
 Vagrant.configure(2) do |config|
-  config.vm.box = "fedora/25-cloud-base"
+  #config.vm.box = "fedora/25-cloud-base"
+  config.vm.box = "centos/7"
   config.ssh.insert_key = false
   VMS = 1
   (0..VMS-1).each do |vm|

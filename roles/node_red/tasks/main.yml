@@ -1,12 +1,11 @@
   - name: ensure directory exists
-    file: path=/home/vagrant/.node-red state=directory owner=vagrant group=vagrant
+    file: path={{ local_home }}/.node-red state=directory owner={{ username }} group={{ group }}
 
   - name: install node-red
     command: npm install -g --unsafe-perm node-red
 
-
   - name: create flow from template
-    template: src=flows_server0.json.j2 dest=/home/vagrant/.node-red/flows_server0.json owner=vagrant group=vagrant mode=0664
+    template: src=flows_server0.json.j2 dest={{ local_home }}/.node-red/flows_server0.json owner={{ username }} group={{ group }} mode=0664
 
   - name: setup a systemd service
     template: src=nodered.service.j2 dest=/usr/lib/systemd/system/nodered.service

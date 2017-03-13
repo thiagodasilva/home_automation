@@ -1,9 +1,10 @@
-- hosts: all
-  gather_facts: false
-  become: yes
-  tasks:
-    - name: install python and deps for ansible modules
-      raw: dnf install -y python2 python2-dnf libselinux-python
+#- hosts: all
+#  gather_facts: false
+#  become: yes
+#  tasks:
+#    - name: install python and deps for ansible modules
+#      raw: dnf install -y python2 python2-dnf libselinux-python
+#      when: ansible_distribution in ['Fedora']
 
 - hosts: all
   gather_facts: true
