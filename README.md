@@ -22,7 +22,7 @@ a Raspberry Pi with Fedora 25_).
 
 The ``Vagrantfile`` allows you to test on a virtual machine, to get started
 simply run ``vagrant up`` and stack will be configured for you, the ports for
-each service is printed at the end of the ansible output.
+each service are printed at the end of the ansible output.
 
 The ``temperature_sensor`` directory contains the code used to run on the
 ESP8266 devices. The ``sample`` directory contains sample data to test loading
@@ -31,4 +31,11 @@ the data into InfluxDB. It was usefult to start playing with Grafana dashboards.
 In the future, I'd like to provide some Dashboard templates.
 
 Let me know what you think and patches are welcome.
-     
+
+## How to get started:
+
+  * ``vagrant up``
+  * Use ``mosquitto_pub`` to publish data to the mqtt broker _or_ use script
+    in ``sample`` dir to load some sample temperatures directly to InfluxDB.
+  * Using the debug panel, you can also see the data on node-red.
+  * Start building a Dashboard on Grafana to visualize data.
