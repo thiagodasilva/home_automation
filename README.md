@@ -37,5 +37,6 @@ Let me know what you think and patches are welcome.
   * ``vagrant up``
   * Use ``mosquitto_pub`` to publish data to the mqtt broker _or_ use script
     in ``sample`` dir to load some sample temperatures directly to InfluxDB.
+    * ``mosquitto_pub -d -t sensors/testroom/temp -m '72'``
   * Using the debug panel, you can also see the data on node-red.
   * Start building a Dashboard on Grafana to visualize data.
