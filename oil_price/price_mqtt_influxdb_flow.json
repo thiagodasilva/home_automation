@@ -1,0 +1,99 @@
+[
+    {
+        "id": "492c3bef.af79f4",
+        "type": "tab",
+        "label": "Flow 3"
+    },
+    {
+        "id": "858fdcc0.6ca44",
+        "type": "mqtt in",
+        "z": "492c3bef.af79f4",
+        "name": "",
+        "topic": "oil_price",
+        "qos": "2",
+        "broker": "ff25a1ce.b97a9",
+        "x": 239,
+        "y": 246,
+        "wires": [
+            [
+                "b7eb97dd.f90758"
+            ]
+        ]
+    },
+    {
+        "id": "82093bf1.41ba48",
+        "type": "debug",
+        "z": "492c3bef.af79f4",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 758,
+        "y": 234,
+        "wires": []
+    },
+    {
+        "id": "176cab6.27ffe55",
+        "type": "http request",
+        "z": "492c3bef.af79f4",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "url": "http://localhost:8086/write?db=oil_price",
+        "tls": "",
+        "x": 582,
+        "y": 179,
+        "wires": [
+            [
+                "82093bf1.41ba48"
+            ]
+        ]
+    },
+    {
+        "id": "b7eb97dd.f90758",
+        "type": "function",
+        "z": "492c3bef.af79f4",
+        "name": "mqtt to influxdb",
+        "func": "msg.url =\"http://localhost:8086/write?db=oil_price\";\nmsg.payload = \"price,company=patriot value=\" + msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 419,
+        "y": 325,
+        "wires": [
+            [
+                "176cab6.27ffe55",
+                "dc68a213.22d72"
+            ]
+        ]
+    },
+    {
+        "id": "dc68a213.22d72",
+        "type": "debug",
+        "z": "492c3bef.af79f4",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 597,
+        "y": 415,
+        "wires": []
+    },
+    {
+        "id": "ff25a1ce.b97a9",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]

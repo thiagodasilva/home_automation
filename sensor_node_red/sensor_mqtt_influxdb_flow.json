@@ -1,0 +1,102 @@
+[
+    {
+        "id": "b3924e4a.0539a",
+        "type": "tab",
+        "label": "Flow 1"
+    },
+    {
+        "id": "9d748ad.b28fb78",
+        "type": "mqtt in",
+        "z": "b3924e4a.0539a",
+        "name": "",
+        "topic": "sensors/#",
+        "qos": "2",
+        "broker": "9f6ce564.f6d858",
+        "x": 212,
+        "y": 150,
+        "wires": [
+            [
+                "8ae5f1cf.a34c3"
+            ]
+        ]
+    },
+    {
+        "id": "8ae5f1cf.a34c3",
+        "type": "function",
+        "z": "b3924e4a.0539a",
+        "name": "MQTT to InfluxDB",
+        "func": "var tokens = msg.topic.split(\"/\");\nvar dest = tokens[tokens.length-1];\nmsg.url =\"http://localhost:8086/write?db=sensors_db\";\nmsg.payload = tokens[2] + \",device=\" + tokens[1] + \" value=\" + msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 431,
+        "y": 152,
+        "wires": [
+            [
+                "1b66f8d6.323cf7",
+                "a0475912.9fef98"
+            ]
+        ]
+    },
+    {
+        "id": "1b66f8d6.323cf7",
+        "type": "http request",
+        "z": "b3924e4a.0539a",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "url": "http://localhost:8086/write?db=sensors_db",
+        "tls": "",
+        "x": 654,
+        "y": 151,
+        "wires": [
+            [
+                "377f8d3b.302f22"
+            ]
+        ]
+    },
+    {
+        "id": "377f8d3b.302f22",
+        "type": "debug",
+        "z": "b3924e4a.0539a",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 848,
+        "y": 150,
+        "wires": []
+    },
+    {
+        "id": "a0475912.9fef98",
+        "type": "debug",
+        "z": "b3924e4a.0539a",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 638,
+        "y": 291,
+        "wires": []
+    },
+    {
+        "id": "9f6ce564.f6d858",
+        "type": "mqtt-broker",
+        "z": "b3924e4a.0539a",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node-red",
+        "usetls": false,
+        "verifyservercert": true,
+        "compatmode": true,
+        "keepalive": "15",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": ""
+    }
+]
