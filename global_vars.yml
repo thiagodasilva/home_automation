@@ -1,0 +1,3 @@
+username: "vagrant"
+group: "vagrant"
+local_home: "/home/{{ username }}"

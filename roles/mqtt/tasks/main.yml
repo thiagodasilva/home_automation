@@ -6,12 +6,13 @@
         gpgcheck: yes
         gpgkey: http://download.opensuse.org/repositories/home:/oojah:/mqtt/CentOS_CentOS-7//repodata/repomd.xml.key
         enabled: yes
+    when: ansible_distribution in ['RedHat', 'CentOS']
 
   - name: installing dependencies
-    yum: name={{ item }} state=present
+    package: name={{ item }} state=present
     with_items:
-      - mosquitto
-      - mosquitto-clients
+       - mosquitto
+       - mosquitto-clients
 
   - name: start mosquitto service
-    service: name=mosquitto state=started enabled=yes
+    systemd: name=mosquitto state=started enabled=yes

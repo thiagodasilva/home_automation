@@ -1,0 +1,13 @@
+  - name: add influxdb repository
+    yum_repository:
+        name: influxdb
+        description: InfluxDB Repository - RHEL \$releasever
+        baseurl: https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+        gpgcheck: yes
+        gpgkey: https://repos.influxdata.com/influxdb.key
+        enabled: yes
+
+  - name: installing dependencies
+    yum: name={{ item }} state=present
+    with_items:
+      - influxdb

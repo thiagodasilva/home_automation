@@ -1,16 +1,59 @@
-  - name: add influxdb repository
-    yum_repository:
-        name: influxdb
-        description: InfluxDB Repository - RHEL \$releasever
-        baseurl: https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
-        gpgcheck: yes
-        gpgkey: https://repos.influxdata.com/influxdb.key
-        enabled: yes
+- include: centos.yml
+  when: ansible_distribution in ['RedHat', 'CentOS']
 
-  - name: installing dependencies
-    yum: name={{ item }} state=present
-    with_items:
-      - influxdb
+- include: fedora.yml
+  when: ansible_distribution in ['Fedora']
 
-  - name: start influxdb service
-    service: name=influxdb state=started enabled=yes
+- name: remove reporting-disabled
+  replace:
+      dest: /etc/influxdb/influxdb.conf
+      regexp: "reporting-disabled = false"
+      replace: "reporting-disabled = true"
+
+- name: config meta dir
+  ini_file:
+      dest: /etc/influxdb/influxdb.conf
+      section: meta
+      option: dir
+      value: "\"/mnt/influxdb/meta\""
+      create: no
+      state: present
+
+- name: config data dir
+  ini_file:
+      dest: /etc/influxdb/influxdb.conf
+      section: data
+      option: dir
+      value: "\"/mnt/influxdb/data\""
+      create: no
+      state: present
+
+- name: config data wal-dir
+  ini_file:
+      dest: /etc/influxdb/influxdb.conf
+      section: data
+      option: wal-dir
+      value: "\"/mnt/influxdb/wal\""
+      create: no
+      state: present
+
+- name: config admin enabled
+  ini_file:
+      dest: /etc/influxdb/influxdb.conf
+      section: admin
+      option: enabled
+      value: "true"
+      create: no
+      state: present
+
+- name: set permission on /etc/influxdb
+  file: path=/etc/influxdb owner=influxdb group=influxdb recurse=yes state=directory
+
+- name: create /mnt/influxdb
+  file: path=/mnt/influxdb owner=influxdb group=influxdb recurse=yes state=directory
+
+- name: start influxdb service
+  service: name=influxdb state=started enabled=yes
+
+- name: Create sample database
+  command: influx -execute 'CREATE DATABASE sensors_db'

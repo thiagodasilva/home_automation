@@ -1,0 +1,17 @@
+[Unit]
+Description=NodeRed service
+
+[Service]
+Environment="OPTIONS=--max-old-space-size=128"
+ExecStart=/usr/bin/node $OPTIONS red.js -v
+WorkingDirectory=/usr/lib/node_modules/node-red
+User={{ username }}
+Group={{ group }}
+Nice=10
+SyslogIdentifier=NodeRed
+StandardOutput=syslog
+Restart=on-failure
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
