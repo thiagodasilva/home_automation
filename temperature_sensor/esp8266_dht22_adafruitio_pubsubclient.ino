@@ -19,30 +19,28 @@
 
 // DHT 22 sensor
 #define DHTPIN 2
-#define DHTTYPE DHT22 
+#define DHTTYPE DHT22
 
 // WiFi parameters
 #define WLAN_SSID       "<your_ssid>"
-#define WLAN_PASS       "<your_pass"
+#define WLAN_PASS       "<your_wifi_password>"
 
 // Adafruit IO
-#define AIO_USERNAME    "<adafruit_username>"
-#define AIO_KEY         "<adafruit_aio_key>"
-#define TEMP_FEED_PATH  "<username>/feeds/temperature"
-#define HUMIDITY_FEED_PATH "<username>/feeds/humidity"
+#define TEMP_FEED_PATH  "sensors/attic/temperature"
+#define HUMIDITY_FEED_PATH "sensors/attic/humidity"
 
 // LEDs
 #define BLUE_LED 4
 #define GREEN_LED 5
 
 // DHT sensor
-DHT dht(DHTPIN, DHTTYPE, 15);
+DHT dht(DHTPIN, DHTTYPE);
 
 // Functions
 void connect();
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
-WiFiClientSecure client;
+WiFiClient client;
 PubSubClient mqttclient(client);
 
 
@@ -70,6 +68,7 @@ void setup() {
   Serial.print(F("Connecting to "));
   Serial.println(WLAN_SSID);
 
+  WiFi.mode(WIFI_STA);
   WiFi.begin(WLAN_SSID, WLAN_PASS);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -81,11 +80,11 @@ void setup() {
   Serial.println(F("WiFi connected"));
   Serial.println(F("IP address: "));
   Serial.println(WiFi.localIP());
-  delay(3000);
+  delay(10000);
 
-  // connect to adafruit io
-  mqttclient.setServer("io.adafruit.com", 8883);
-  mqttclient.setCallback(callback);  
+  // connect to mqtt server
+  mqttclient.setServer("192.168.0.50", 1883);
+  mqttclient.setCallback(callback);
   connect();
 
 }
@@ -106,6 +105,7 @@ void loop() {
   mqttclient.publish(TEMP_FEED_PATH, String(temperature_data).c_str(), true);
   Serial.print("Temperature published: ");
   Serial.print(temperature_data);
+  delay(1000);
   mqttclient.publish(HUMIDITY_FEED_PATH, String(humidity_data).c_str(), true);
   Serial.print("\nHumidity published: ");
   Serial.print(humidity_data);
@@ -117,7 +117,7 @@ void loop() {
 
 }
 
-// connect to adafruit io via MQTT
+// connect to MQTT server
 void connect() {
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -125,20 +125,20 @@ void connect() {
     digitalWrite(BLUE_LED, LOW);
     delay(3000);
   }
-  Serial.print(F("Connecting to Adafruit IO... "));
+  Serial.print(F("Connecting to MQTT server... "));
   while(!mqttclient.connected()) {
-    if (mqttclient.connect("ESP8266Client", AIO_USERNAME, AIO_KEY)) {
-      Serial.println(F("Adafruit IO Connected!"));  
+    if (mqttclient.connect("ESP8266Client")) {
+      Serial.println(F("MQTT server Connected!"));  
         digitalWrite(GREEN_LED, HIGH);
         digitalWrite(BLUE_LED, LOW);
     } else {
       digitalWrite(GREEN_LED, LOW);
       digitalWrite(BLUE_LED, HIGH);
-      Serial.print(F("Adafruit IO connection failed! rc="));
+      Serial.print(F("MQTT server connection failed! rc="));
       Serial.print(mqttclient.state());
       Serial.println("try again in 10 seconds");
       // Wait 5 seconds before retrying
-      delay(5000);
+      delay(20000);
     }
   }
 
